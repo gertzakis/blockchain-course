@@ -1,22 +1,41 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-contract AutoPassportChain {
+contract AutoPassport {
+
+    struct ServiceRecord {
+        string serviceRecordID;
+        string description;
+        uint256 date;
+    }
+
+    struct IncidentRecord {
+        string incidentRecordID;
+        string description;
+        uint256 date;
+    }
+
+    struct LegalDocument {
+        string legalDocumentName;
+        string description;
+        uint256 date;
+    }
     
     struct Vehicle {
         string vehicleId; // VIN or registration number
-        string[] serviceRecords; // Array of IPFS hashes
-        string[] incidentRecords; // Array of IPFS hashes
-        string[] legalDocuments; // Array of IPFS hashes
+        ServiceRecord[] serviceRecords;  
+        IncidentRecord[] incidentRecords;
+        LegalDocument[] legalDocuments;
+
         bool exists;
     }
 
     mapping(string => Vehicle) private vehicles; // Map VIN => Vehicle
 
     event VehicleRegistered(string vehicleId);
-    event ServiceRecordAdded(string vehicleId, string serviceRecordID);
-    event IncidentRecordAdded(string vehicleId, string IncidentRecordID);
-    event LegalDocumentAdded(string vehicleId, string LegalDocument);
+    event ServiceRecordAdded(string vehicleId, ServiceRecord serviceRecord);
+    event IncidentRecordAdded(string vehicleId, IncidentRecord incidentRecord);
+    event LegalDocumentAdded(string vehicleId, LegalDocument legalDocument);
 
     modifier vehicleExists(string memory vehicleId) {
         require(vehicles[vehicleId].exists, "Vehicle not registered");
@@ -33,28 +52,28 @@ contract AutoPassportChain {
         emit VehicleRegistered(vehicleId);
     }
 
-    function addServiceRecord(string memory vehicleId, string memory serviceRecordID)
+    function addServiceRecord(string memory vehicleId, ServiceRecord memory serviceRecord)
         public
         vehicleExists(vehicleId)
     {
-        vehicles[vehicleId].serviceRecords.push(serviceRecordID);
-        emit ServiceRecordAdded(vehicleId, serviceRecordID);
+        vehicles[vehicleId].serviceRecords.push(serviceRecord);
+        emit ServiceRecordAdded(vehicleId, serviceRecord);
     }
 
-    function addIncidentRecord(string memory vehicleId, string memory IncidentRecordID)
+    function addIncidentRecord(string memory vehicleId, IncidentRecord memory incidentRecord)
         public
         vehicleExists(vehicleId)
     {
-        vehicles[vehicleId].incidentRecords.push(IncidentRecordID);
-        emit IncidentRecordAdded(vehicleId, IncidentRecordID);
+        vehicles[vehicleId].incidentRecords.push(incidentRecord);
+        emit IncidentRecordAdded(vehicleId, incidentRecord);
     }
 
-    function addLegalDocument(string memory vehicleId, string memory LegalDocument)
+    function addLegalDocument(string memory vehicleId, LegalDocument memory legalDocument)
         public
         vehicleExists(vehicleId)
     {
-        vehicles[vehicleId].legalDocuments.push(LegalDocument);
-        emit LegalDocumentAdded(vehicleId, LegalDocument);
+        vehicles[vehicleId].legalDocuments.push(legalDocument);
+        emit LegalDocumentAdded(vehicleId, legalDocument);
     }
 
     // Get all records for a vehicle
@@ -63,9 +82,9 @@ contract AutoPassportChain {
         view
         vehicleExists(vehicleId)
         returns (
-            string[] memory service,
-            string[] memory incidents,
-            string[] memory documents
+            ServiceRecord[] memory service,
+            IncidentRecord[] memory incidents,
+            LegalDocument[] memory documents
         )
     {
         Vehicle storage v = vehicles[vehicleId];
