@@ -1,0 +1,321 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "vehicleId",
+        "type": "string"
+      },
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "incidentRecordID",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "date",
+            "type": "uint256"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct AutoPassport.IncidentRecord",
+        "name": "incidentRecord",
+        "type": "tuple"
+      }
+    ],
+    "name": "IncidentRecordAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "vehicleId",
+        "type": "string"
+      },
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "legalDocumentName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "date",
+            "type": "uint256"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct AutoPassport.LegalDocument",
+        "name": "legalDocument",
+        "type": "tuple"
+      }
+    ],
+    "name": "LegalDocumentAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "vehicleId",
+        "type": "string"
+      },
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "serviceRecordID",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "date",
+            "type": "uint256"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct AutoPassport.ServiceRecord",
+        "name": "serviceRecord",
+        "type": "tuple"
+      }
+    ],
+    "name": "ServiceRecordAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "vehicleId",
+        "type": "string"
+      }
+    ],
+    "name": "VehicleRegistered",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "vehicleId",
+        "type": "string"
+      },
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "incidentRecordID",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "date",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct AutoPassport.IncidentRecord",
+        "name": "incidentRecord",
+        "type": "tuple"
+      }
+    ],
+    "name": "addIncidentRecord",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "vehicleId",
+        "type": "string"
+      },
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "legalDocumentName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "date",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct AutoPassport.LegalDocument",
+        "name": "legalDocument",
+        "type": "tuple"
+      }
+    ],
+    "name": "addLegalDocument",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "vehicleId",
+        "type": "string"
+      },
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "serviceRecordID",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "date",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct AutoPassport.ServiceRecord",
+        "name": "serviceRecord",
+        "type": "tuple"
+      }
+    ],
+    "name": "addServiceRecord",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "vehicleId",
+        "type": "string"
+      }
+    ],
+    "name": "getVehicleData",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "serviceRecordID",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "date",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct AutoPassport.ServiceRecord[]",
+        "name": "service",
+        "type": "tuple[]"
+      },
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "incidentRecordID",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "date",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct AutoPassport.IncidentRecord[]",
+        "name": "incidents",
+        "type": "tuple[]"
+      },
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "legalDocumentName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "date",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct AutoPassport.LegalDocument[]",
+        "name": "documents",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "vehicleId",
+        "type": "string"
+      }
+    ],
+    "name": "registerVehicle",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

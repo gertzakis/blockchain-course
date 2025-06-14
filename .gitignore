@@ -13,3 +13,11 @@ states/
 # Optional
 .env
 .env.local
+
+
+# Node modules and artifacts
+node_modules
+build
+npm-debug.log
+.env
+.DS_Store
