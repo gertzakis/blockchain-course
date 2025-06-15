@@ -1,7 +1,7 @@
 // https://docs.metamask.io/guide/ethereum-provider.html#using-the-provider
 
-import React, {useState} from 'react'
-import {ethers} from 'ethers'
+import React, { useState } from 'react'
+import { ethers } from 'ethers'
 import AutoPassport_abi from './contracts/AutoPassport_abi.json'
 
 const AutoPassport = () => {
@@ -13,7 +13,7 @@ const AutoPassport = () => {
 	const [defaultAccount, setDefaultAccount] = useState(null);
 	const [connButtonText, setConnButtonText] = useState('Connect Wallet');
 
-	const [currentContractVal, setCurrentContractVal] = useState(null);
+	const [vehicleData, setVehicleData] = useState(null);
 
 	const [provider, setProvider] = useState(null);
 	const [signer, setSigner] = useState(null);
@@ -22,15 +22,15 @@ const AutoPassport = () => {
 	const connectWalletHandler = () => {
 		if (window.ethereum && window.ethereum.isMetaMask) {
 
-			window.ethereum.request({ method: 'eth_requestAccounts'})
-			.then(result => {
-				accountChangedHandler(result[0]);
-				setConnButtonText('Wallet Connected');
-			})
-			.catch(error => {
-				setErrorMessage(error.message);
+			window.ethereum.request({ method: 'eth_requestAccounts' })
+				.then(result => {
+					accountChangedHandler(result[0]);
+					setConnButtonText('Wallet Connected');
+				})
+				.catch(error => {
+					setErrorMessage(error.message);
 
-			});
+				});
 
 		} else {
 			console.log('Need to install MetaMask');
@@ -68,31 +68,37 @@ const AutoPassport = () => {
 
 	const setHandler = (event) => {
 		event.preventDefault();
-		console.log('sending ' + event.target.setText.value + ' to the contract');
-		contract.set(event.target.setText.value);
+		console.log('sending ' + event.target.vin.value + ' to the contract');
+		contract.getVehicleData(event.target.vin.value);
 	}
 
-	const getCurrentVal = async () => {
-		let val = await contract.get();
-		setCurrentContractVal(val);
+	const getHandler = (event) => {
+		event.preventDefault();
+		console.log('sending ' + event.target.vin.value + ' to the contract');
+		let tempVehicleData = contract.getVehicleData(event.target.vin.value);
+		setVehicleData(tempVehicleData);
+		console.log('Vehicle Data: ' + tempVehicleData.toString());
 	}
 
 	return (
 		<div>
-		<h4> {"Get/Set Contract interaction"} </h4>
+			<h4> {"Get/Set Contract interaction"} </h4>
 			<button onClick={connectWalletHandler}>{connButtonText}</button>
 			<div>
-				<h3>Vehicle ID: {defaultAccount}</h3>
+				<h3>Wallet ID: {defaultAccount}</h3>
 			</div>
-			<form onSubmit={setHandler}>
-				<input id="setText" type="text"/>
-				<button type={"submit"}> Register Vehicle</button>
+			<form onSubmit={getHandler}>
+				<input id="vin" type="text" />
+				<button type={"submit"}> Get Vehicle data</button>
 			</form>
 			<div>
-			<button onClick={getCurrentVal} style={{marginTop: '5em'}}> Get Current Contract Value </button>
+				<h3>Vehicle Data: {JSON.stringify(vehicleData)}</h3>
+			</div>
+			{/* <div>
+				<button onClick={getVehicleData} style={{ marginTop: '5em' }}> Get Current Contract Value </button>
 			</div>
 			{currentContractVal}
-			{errorMessage}
+			{errorMessage} */}
 		</div>
 	);
 }
