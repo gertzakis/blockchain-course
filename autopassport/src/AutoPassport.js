@@ -14,6 +14,11 @@ const AutoPassport = () => {
 	const [connButtonText, setConnButtonText] = useState('Connect Wallet');
 
 	const [vehicleData, setVehicleData] = useState(null);
+	const [loading, setLoading] = useState(false);
+	const [vehicleId, setVehicleId] = useState("");
+	const [incidentData, setIncidentData] = useState("");
+	const [serviceData, setServiceData] = useState("");
+
 
 	const [provider, setProvider] = useState(null);
 	const [signer, setSigner] = useState(null);
@@ -49,7 +54,6 @@ const AutoPassport = () => {
 		window.location.reload();
 	}
 
-
 	// listen for account changes
 	window.ethereum.on('accountsChanged', accountChangedHandler);
 
@@ -66,19 +70,66 @@ const AutoPassport = () => {
 		setContract(tempContract);
 	}
 
-	const setHandler = (event) => {
-		event.preventDefault();
-		console.log('sending ' + event.target.vin.value + ' to the contract');
-		contract.getVehicleData(event.target.vin.value);
-	}
+	// Get vehicle data by ID
+	const handleGetVehicle = async () => {
+		setLoading(true);
+		try {
+			const data = await contract.getVehicleData(vehicleId);
+			setVehicleData(data);
+		} catch (err) {
+			alert("Error fetching vehicle: " + err.message);
+			setVehicleData(null);
+		}
+		setLoading(false);
+	};
 
-	const getHandler = (event) => {
-		event.preventDefault();
-		console.log('sending ' + event.target.vin.value + ' to the contract');
-		let tempVehicleData = contract.getVehicleData(event.target.vin.value);
-		setVehicleData(tempVehicleData);
-		console.log('Vehicle Data: ' + tempVehicleData.toString());
-	}
+	// Register a new vehicle
+	const handleRegisterVehicle = async () => {
+		setLoading(true);
+		try {
+			// Add more params if your contract requires them
+			const tx = await contract.registerVehicle(vehicleId);
+			await tx.wait();
+			alert("Vehicle registered!");
+		} catch (err) {
+			alert("Error registering vehicle: " + err.message);
+		}
+		setLoading(false);
+	};
+
+	// Add an incident record
+	const handleAddIncident = async () => {
+		setLoading(true);
+		try {
+			// Convert comma-separated string to array and trim spaces
+			const keysArray = incidentData.split(",").map(k => k.trim()).filter(k => k.length > 0);
+			// Call the contract function with the array
+			const tx = await contract.addIncidentRecord(vehicleId, keysArray);
+			await tx.wait();
+			alert("Incident record added!");
+			setIncidentData("");
+		} catch (err) {
+			alert("Error adding incident: " + err.message);
+		}
+		setLoading(false);
+	};
+
+	// Add a service record
+	const handleAddService = async () => {
+		setLoading(true);
+		try {
+			// Convert comma-separated string to array and trim spaces
+			const keysArray = serviceData.split(",").map(k => k.trim()).filter(k => k.length > 0);
+			// Call the contract function with the array
+			const tx = await contract.addServiceRecord(vehicleId, keysArray);
+			await tx.wait();
+			alert("Service record added!");
+			setServiceData("");
+		} catch (err) {
+			alert("Error adding service: " + err.message);
+		}
+		setLoading(false);
+	};
 
 	return (
 		<div>
@@ -87,18 +138,45 @@ const AutoPassport = () => {
 			<div>
 				<h3>Wallet ID: {defaultAccount}</h3>
 			</div>
-			<form onSubmit={getHandler}>
-				<input id="vin" type="text" />
-				<button type={"submit"}> Get Vehicle data</button>
-			</form>
-			<div>
-				<h3>Vehicle Data: {JSON.stringify(vehicleData)}</h3>
+
+			<input
+				value={vehicleId}
+				onChange={e => setVehicleId(e.target.value)}
+				placeholder="Vehicle ID"
+			/>
+			<button onClick={handleGetVehicle} disabled={loading}>
+				Get Vehicle Data
+			</button>
+			<button onClick={handleRegisterVehicle} disabled={loading}>
+				Register Vehicle
+			</button>
+			<div style={{ marginTop: "1em" }}>
+				<input
+					value={serviceData}
+					onChange={e => setServiceData(e.target.value)}
+					placeholder='Service Data (e.g. key-1,key-2,key-3)'
+				/>
+				<button onClick={handleAddService} disabled={loading || !serviceData}>
+					Add Service Record
+				</button>
 			</div>
-			{/* <div>
-				<button onClick={getVehicleData} style={{ marginTop: '5em' }}> Get Current Contract Value </button>
+			<div style={{ marginTop: "1em" }}>
+				<input
+					value={incidentData}
+					onChange={e => setIncidentData(e.target.value)}
+					placeholder='Incident Data (e.g. key-1,key-2,key-3)'
+				/>
+				<button onClick={handleAddIncident} disabled={loading || !incidentData}>
+					Add Incident Record
+				</button>
 			</div>
-			{currentContractVal}
-			{errorMessage} */}
+			{loading && <p>Loading...</p>}
+			{vehicleData && (
+				<div>
+					<h3>Vehicle Data:</h3>
+					<pre>{JSON.stringify(vehicleData, null, 2)}</pre>
+				</div>
+			)}
 		</div>
 	);
 }
